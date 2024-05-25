@@ -1,8 +1,8 @@
 package bwtmtfha
 
 import (
-	"os"
 	"fmt"
+	"os"
 
 	"github.com/Shetami/compress/bwt"
 	"github.com/Shetami/compress/haffman"
@@ -19,7 +19,7 @@ func write_bin(file string, encodedData []byte) {
 }
 
 func BWT_MTF_HA(){
-	filename := "test2.txt"
+	filename := "test.txt"
 
     data, err := os.ReadFile(filename)
     if err != nil {
@@ -29,13 +29,15 @@ func BWT_MTF_HA(){
     // Сжатие текста
 	transformed:= bwt.BWT(string(data))
 	mtf_transformed := mtf.MTFEncode(transformed)
-	ha_transformed, root := haffman.HaffmanEncode(mtf_transformed)
+	ha_transformed, root := haffman.HaffmanEncode2(string(mtf_transformed))
+    //fmt.Println("HA:", ha_transformed)
 
-	write_bin("encode.txt", ha_transformed)
+	write_bin("compressed.bmh", []byte(ha_transformed))
 
 	// Разжатие текста
-	ha_decode := haffman.HaffmanDecode(ha_transformed, root)
-	mtf_decode := mtf.MTFDncode(ha_decode)
+	ha_decode := haffman.HaffmanDecode2(ha_transformed, root)
+    //fmt.Println("INV:", ha_decode)
+	mtf_decode := mtf.MTFDncode([]byte(ha_decode))
 	bwt_decode := bwt.Invert(mtf_decode)
 
 	outputFileDecompressed, err := os.Create("decompressed.txt")

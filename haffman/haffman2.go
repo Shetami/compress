@@ -4,6 +4,7 @@ import (
 	"container/heap"
 	"fmt"
 	"strings"
+	"os"
   )
   
   // Huffman Tree Node
@@ -157,12 +158,13 @@ func byteArrayToBitString(byteArray []byte) string {
 
 func Haffman2() {
 	file := read_file("micro.txt")
+	fileInfo, _ := os.Stat("micro.txt")
+	fmt.Printf("Size: %d Kb", fileInfo.Size())
 	freqMap := buildFrequencyMap2(string(file))
 	huffmanTree := buildHuffmanTree2(freqMap)
   
 	codes := make(map[rune]string)
 	buildHuffmanCodes(huffmanTree, "", codes)
-	//fmt.Println("HFT:", codes)
   
 	encoded := encode_2(string(file), codes)
 	byteArray, err := bitStringToByteArray(encoded)
@@ -178,6 +180,37 @@ func Haffman2() {
 	decoded := decode_2(dec, huffmanTree)
 
 	write_decode("decompressed.txt", []byte(decoded))
-	//fmt.Println("Decoded string:", decoded)
   }
   
+func HaffmanEncode2(s string) ([]byte, *Node2){
+    // Count character frequencies
+    freqMap := buildFrequencyMap2(s)
+
+    // Build Huffman tree
+    huffmanTree := buildHuffmanTree2(freqMap)
+
+    // Build code table
+    codes := make(map[rune]string)
+	buildHuffmanCodes(huffmanTree, "", codes)
+  
+    // Encode data
+    encoded := encode_2(s, codes)
+	byteArray, err := bitStringToByteArray(encoded)
+    if err != nil {
+        fmt.Println("Error:", err)
+    }
+
+    return byteArray, huffmanTree
+
+}
+
+func HaffmanDecode2(byteArray []byte, n *Node2) string{
+    
+    // Decode data
+    dec := byteArrayToBitString(byteArray)
+  
+	decoded := decode_2(dec, n)
+
+    return decoded
+
+}
