@@ -157,8 +157,8 @@ func byteArrayToBitString(byteArray []byte) string {
   }
 
 func Haffman2() {
-	file := read_file("micro.txt")
-	fileInfo, _ := os.Stat("micro.txt")
+	file := read_file("test.txt")
+	fileInfo, _ := os.Stat("test.txt")
 	fmt.Printf("Size: %d Kb", fileInfo.Size())
 	freqMap := buildFrequencyMap2(string(file))
 	huffmanTree := buildHuffmanTree2(freqMap)

@@ -21,7 +21,7 @@ func BwtRle(){
     compressedText := rle.Compress(string(transformed))
 
 	// Запись сжатого текста в файл
-    outputFile, err := os.Create("compressed.txt")
+    outputFile, err := os.Create("compressed.br")
     if err != nil {
         fmt.Println("Ошибка создания файла:", err)
         return

@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	windowSize = 4096
+	WindowSize = 4096
 	lookaheadBufferSize = 18
 )
 
@@ -17,13 +17,13 @@ type token struct {
 	next   byte
 }
 
-func compress(input []byte) []token {
+func Compress(input []byte) []token {
 	var tokens []token
 	inputLen := len(input)
 	for i := 0; i < inputLen; {
 		matchOffset, matchLength := 0, 0
 
-		for j := 1; j <= windowSize && i-j >= 0; j++ {
+		for j := 1; j <= WindowSize && i-j >= 0; j++ {
 			k := 0
 			for k < lookaheadBufferSize && i+k < inputLen && input[i-j+k] == input[i+k] {
 				k++
@@ -60,7 +60,7 @@ func writeCompressed(tokens []token, filename string) {
 	}
 }
 
-func decompress(tokens []token) []byte {
+func Decompress(tokens []token) []byte {
 	var buffer bytes.Buffer
 
 	for _, tok := range tokens {
@@ -92,11 +92,68 @@ func readCompressed(filename string) []token {
 	return tokens
 }
 
+func Convert(tokens []token) string {
+	var buffer bytes.Buffer
+  
+	for _, token := range tokens {
+	  start := buffer.Len() - token.offset
+	  for i := 0; i < token.length; i++ {
+		buffer.WriteByte(buffer.Bytes()[start+i])
+	  }
+	  if token.next != 0 {
+		buffer.WriteByte(token.next)
+	  }
+	}
+  
+	return buffer.String()
+  }
+
+  func InverseConvert(input string, windowSize int) []token {
+	var tokens []token
+	inputLength := len(input)
+  
+	for i := 0; i < inputLength; {
+	  var offset, length int
+	  var next byte
+  
+	  // Устанавливаем границы окна
+	  start := i - windowSize
+	  if start < 0 {
+		start = 0
+	  }
+	  end := i
+  
+	  // Поиск самого длинного совпадения
+	  for j := start; j < end; j++ {
+		k := 0
+		for k < end-j && i+k < inputLength && input[j+k] == input[i+k] {
+		  k++
+		}
+		if k > length {
+		  offset = end - j
+		  length = k
+		}
+	  }
+  
+	  // Определяем следующий символ
+	  if i+length < inputLength {
+		next = input[i+length]
+	  }
+  
+	  // Добавляем токен в список
+	  tokens = append(tokens, token{offset: offset, length: length, next: next})
+	  i += length + 1
+	}
+  
+	return tokens
+  }
+  
+
 func LZ77() {
 
-	inputFile := "input2.txt"
+	inputFile := "test.txt"
 	outputFile := "compressed.lz77"
-	decompressFile := "decompress.txt"
+	decompressFile := "decompressed.txt"
 
 	input, err := os.ReadFile(inputFile)
 	if err != nil {
@@ -104,7 +161,7 @@ func LZ77() {
 		return
 	}
 
-	tokens := compress(input)
+	tokens := Compress(input)
 	writeCompressed(tokens, outputFile)
 
 	tokens = readCompressed(outputFile)
@@ -112,7 +169,7 @@ func LZ77() {
 		return
 	}
 
-	output := decompress(tokens)
+	output := Decompress(tokens)
 	err = os.WriteFile(decompressFile, output, 0644)
 	if err != nil {
 		fmt.Println("Error writing decompressed file:", err)
