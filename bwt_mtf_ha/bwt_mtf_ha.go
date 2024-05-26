@@ -18,10 +18,10 @@ func write_bin(file string, encodedData []byte) {
     }
 }
 
-func BWT_MTF_HA(){
-	filename := "test.txt"
+func BWT_MTF_HA(f string){
+	//filename := "test.txt"
 
-    data, err := os.ReadFile(filename)
+    data, err := os.ReadFile(f)
     if err != nil {
         fmt.Println("Error reading file:", err)
         return

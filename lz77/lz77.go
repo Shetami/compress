@@ -149,13 +149,12 @@ func Convert(tokens []token) string {
   }
   
 
-func LZ77() {
+func LZ77(f string) {
 
-	inputFile := "test.txt"
 	outputFile := "compressed.lz77"
 	decompressFile := "decompressed.txt"
 
-	input, err := os.ReadFile(inputFile)
+	input, err := os.ReadFile(f)
 	if err != nil {
 		fmt.Println("Error reading input file:", err)
 		return

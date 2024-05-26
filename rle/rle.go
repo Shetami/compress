@@ -51,10 +51,9 @@ func DecompressRLE(input string) string {
 	return result.String()
 }
 
-func Rle() {
-	filename := "input2.txt"
+func Rle(f string) {
 
-    data, err := os.ReadFile(filename)
+    data, err := os.ReadFile(f)
     if err != nil {
         fmt.Println("Error reading file:", err)
         return
@@ -77,7 +76,6 @@ func Rle() {
         return
     }
 
-    fmt.Println("Текст успешно сжат и записан в файл compressed.txt")
 
     // Распаковка сжатого текста
     decompressedText := DecompressRLE(compressedText)
@@ -96,5 +94,4 @@ func Rle() {
         return
     }
 
-    fmt.Println("Сжатый текст успешно распакован и записан в файл decompressed.txt")
 }

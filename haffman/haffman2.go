@@ -4,7 +4,6 @@ import (
 	"container/heap"
 	"fmt"
 	"strings"
-	"os"
   )
   
   // Huffman Tree Node
@@ -156,10 +155,8 @@ func byteArrayToBitString(byteArray []byte) string {
 	return bitStringResult
   }
 
-func Haffman2() {
-	file := read_file("test.txt")
-	fileInfo, _ := os.Stat("test.txt")
-	fmt.Printf("Size: %d Kb", fileInfo.Size())
+func Haffman2(f string) {
+	file := read_file(f)
 	freqMap := buildFrequencyMap2(string(file))
 	huffmanTree := buildHuffmanTree2(freqMap)
   

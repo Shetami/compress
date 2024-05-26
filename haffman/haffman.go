@@ -89,6 +89,7 @@ func encode(data []byte, codeTable map[byte]string) []byte {
                 buffer |= 1 << (7 - length) // устанавливаем бит в буфере
             }
             length++
+            Usles = int(length)
             if length == 8 { // если буфер заполнен, добавляем его к закодированным данным
                 encoded = append(encoded, buffer)
                 buffer = 0 // сбрасываем буфер
@@ -111,21 +112,40 @@ func decode(encoded []byte, root *Node) []byte {
     var decoded []byte
     node := root
     var buffer uint8 // используем 8-битный буфер для чтения битов из закодированных данных
-    
+    //fmt.Print(Usles)
     for b := 0; b < len(encoded); b++ {
-        buffer = uint8(encoded[b]) // загружаем новый байт в буфер
-        for i := 7; i >= 0; i-- {
-            bit := (buffer >> uint(i)) & 1 // извлекаем бит из буфера
-            if bit == 0 {
-                node = node.left
-            } else {
-                node = node.right
+        if b == len(encoded)-1{
+            buffer = uint8(encoded[b]) // загружаем новый байт в буфер
+            for i := 7; i >= 8 - Usles; i-- {
+                bit := (buffer >> uint(i)) & 1 // извлекаем бит из буфера
+                fmt.Print(bit)
+                if bit == 0 {
+                    node = node.left
+                } else {
+                    node = node.right
+                }
+                if node.left == nil && node.right == nil {
+                    decoded = append(decoded, node.char)
+                    node = root
+                }
             }
-            if node.left == nil && node.right == nil {
-                decoded = append(decoded, node.char)
-                node = root
+        }else{
+            buffer = uint8(encoded[b]) // загружаем новый байт в буфер
+            for i := 7; i >= 0; i-- {
+                bit := (buffer >> uint(i)) & 1 // извлекаем бит из буфера
+                fmt.Print(bit)
+                if bit == 0 {
+                    node = node.left
+                } else {
+                    node = node.right
+                }
+                if node.left == nil && node.right == nil {
+                    decoded = append(decoded, node.char)
+                    node = root
+                }
             }
         }
+        
     }
     
     
@@ -170,7 +190,7 @@ func write_decode(file string, decodedData []byte) {
 
 func HaffmanCompress() {
     // Read input file
-    file := read_file("test2.txt")
+    file := read_file("micro.txt")
 
     // Count character frequencies
     freqMap := frequencies(file)

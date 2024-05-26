@@ -8,10 +8,10 @@ import (
 	"github.com/Shetami/compress/rle"
 )
 
-func BwtRle(){
-	filename := "test.txt"
+func BwtRle(f string){
+	
 
-    data, err := os.ReadFile(filename)
+    data, err := os.ReadFile(f)
     if err != nil {
         fmt.Println("Error reading file:", err)
         return

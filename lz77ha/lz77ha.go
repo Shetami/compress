@@ -17,10 +17,9 @@ func write_bin(file string, encodedData []byte) {
     }
 }
 
-func LZ77HA(){
-	filename := "test.txt"
+func LZ77HA(f string){
 
-    data, err := os.ReadFile(filename)
+    data, err := os.ReadFile(f)
     if err != nil {
         fmt.Println("Error reading file:", err)
         return
